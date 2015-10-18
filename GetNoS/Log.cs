@@ -755,7 +755,7 @@ namespace GetNoS
 		/// <returns>The log filename for the passed date</returns>
 		public static string GetFileName (DateTime dateTime)
 		{
-			return string.Format ("{0}\\{1}{2}{3}.{4}", LogDir, Prefix, dateTime.ToString (DateFormat), Suffix, Extension);
+			return string.Format (Path.Combine (LogDir, string.Format ("{0}{1}{2}.{3}", Prefix, dateTime.ToString (DateFormat), Suffix, Extension)));
 		}
 
 		/// <summary>
