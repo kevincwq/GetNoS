@@ -24,50 +24,94 @@ namespace GetNoS
 		public const string Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
 		public const int ReqTimeout = 60000;
 		public const int ReqReadWriteTimeout = 6000;
+		public static int ParallelTask = 100;
 
-		public	const string SqliteName = "uniprot_db.sqlite";
-		public static readonly IReadOnlyDictionary<string, int> ColumnNames = new Dictionary<string, int> () {
-			{ "Entry",1 },
-			{ "Sequence",2 },
-			{ "Entry name",3 },
-			{ "Protein names",4 },
-			{ "Organism",5 },
-			{ "Gene ontology (GO)",6 },
-			{ "Gene ontology IDs",7 },
-			{ "Gene names",8 },
-			{ "Proteomes",9 },
-			{ "Taxonomic lineage (ALL)",10 },
-			{ "Virus hosts",11 },
-			{ "Metal binding",12 },
-			{ "Nucleotide binding",13 },
-			{ "Site",14 },
-			{ "Annotation",15 },
-			{ "Features",16 },
-			{ "Keywords",17 },
-			{ "Protein existence",18 },
-			{ "Domain [CC]",19 },
-			{ "Sequence similarities",20 },
-			{ "Protein families",21 },
-			{ "Coiled coil",22 },
-			{ "Compositional bias",23 },
-			{ "Domain [FT]",24 },
-			{ "Motif",25 },
-			{ "Region",26 },
-			{ "Repeat",27 },
-			{ "Zinc finger",28 },
-			{ "Cross-reference (PDB)",29 },
-			{ "Cross-reference (Pfam)",30 },
-			{ "DNA binding",31 },
-			{ "Taxonomic lineage (all)",32 },
-			{ "Taxonomic lineage IDs (all)",33 },
-			{ "Gene ontology (biological process)",34 },
-			{ "Gene ontology (molecular function)",35 },
-			{ "Gene ontology (cellular component)",36 },
-			{ "Length",37 },
-			{ "Mass",38 },
-			{ "Mapped PubMed ID",39 },
-			{ "3D",40 }
-		};
+		public	static string SqliteName = "uniprot_db.sqlite";
+		//		public static readonly IReadOnlyList<string> ColumnNames = new List<string> {
+		//			"Entry",
+		//			"Sequence",
+		//			"Entry name",
+		//			"Protein names",
+		//			"Organism",
+		//			"Gene ontology (GO)",
+		//			"Gene ontology IDs",
+		//			"Gene names",
+		//			"Proteomes",
+		//			"Taxonomic lineage (ALL)",
+		//			"Virus hosts",
+		//			"Metal binding",
+		//			"Nucleotide binding",
+		//			"Site",
+		//			"Annotation",
+		//			"Features",
+		//			"Keywords",
+		//			"Protein existence",
+		//			"Domain [CC]",
+		//			"Sequence similarities",
+		//			"Protein families",
+		//			"Coiled coil",
+		//			"Compositional bias",
+		//			"Domain [FT]",
+		//			"Motif",
+		//			"Region",
+		//			"Repeat",
+		//			"Zinc finger",
+		//			"Cross-reference (PDB)",
+		//			"Cross-reference (Pfam)",
+		//			"DNA binding",
+		//			"Taxonomic lineage (all)",
+		//			"Taxonomic lineage IDs (all)",
+		//			"Gene ontology (biological process)",
+		//			"Gene ontology (molecular function)",
+		//			"Gene ontology (cellular component)",
+		//			"Length",
+		//			"Mass",
+		//			"Mapped PubMed ID",
+		//			"3D"
+		//		};
+
+		//		public static class ColumnNames
+		//		{
+		//			public const string Entry = "Entry";
+		//			public const string Sequence = "Sequence";
+		//			public const string Entry_name = "Entry name";
+		//			public const string Protein_names = "Protein names";
+		//			public const string Organism = "Organism";
+		//			public const string Gene_ontology_GO = "Gene ontology (GO)";
+		//			public const string Gene_ontology_IDs = "Gene ontology IDs";
+		//			public const string Gene_names = "Gene names";
+		//			public const string Proteomes = "Proteomes";
+		//			public const string Virus_hosts = "Virus hosts";
+		//			public const string Metal_binding = "Metal binding";
+		//			public const string Nucleotide_binding = "Nucleotide binding";
+		//			public const string Site = "Site";
+		//			public const string Annotation = "Annotation";
+		//			public const string Features = "Features";
+		//			public const string Keywords = "Keywords";
+		//			public const string Protein_existence = "Protein existence";
+		//			public const string Domain_CC = "Domain [CC]";
+		//			public const string Sequence_similarities = "Sequence similarities";
+		//			public const string Protein_families = "Protein families";
+		//			public const string Coiled_coil = "Coiled coil";
+		//			public const string Compositional_bias = "Compositional bias";
+		//			public const string Domain_FT = "Domain [FT]";
+		//			public const string Motif = "Motif";
+		//			public const string Region = "Region";
+		//			public const string Repeat = "Repeat";
+		//			public const string Zinc_finger = "Zinc finger";
+		//			public const string Cross_reference_PDB = "Cross-reference (PDB)";
+		//			public const string Cross_reference_Pfam = "Cross-reference (Pfam)";
+		//			public const string DNA_binding = "DNA binding";
+		//			public const string Taxonomic_lineage_all = "Taxonomic lineage (all)";
+		//			public const string Taxonomic_lineage_IDs_all = "Taxonomic lineage IDs (all)";
+		//			public const string Gene_ontology_biological_process = "Gene ontology (biological process)";
+		//			public const string Gene_ontology_molecular_function = "Gene ontology (molecular function)";
+		//			public const string Gene_ontology_cellular_component = "Gene ontology (cellular component)";
+		//			public const string Length = "Length";
+		//			public const string Mass = "Mass";
+		//			public const string Mapped_PubMed_ID = "Mapped PubMed ID";
+		//			public const string D3 = "3D";
+		//		}
 
 		public	static readonly DbHelper Db;
 
