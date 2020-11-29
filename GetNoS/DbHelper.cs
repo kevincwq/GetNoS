@@ -177,10 +177,15 @@ namespace GetNoS
 						if (keywords [i].GoogleSearchCount == -1) {
 							tasklist.Add (doSearchAsync (keywords [i].Value).ContinueWith (t => {
 								if (t.IsFaulted)
-									Logger.Log (t.Exception);
+									// Logger.Log (t.Exception);
+									Console.WriteLine (t.Exception.InnerException.Message);
 								else {
-									keywords [idi].GoogleSearchCount = t.Result;
-									db.Update (keywords [idi]);
+									if (t.Result != -1) {
+										keywords [idi].GoogleSearchCount = t.Result;
+										db.Update (keywords [idi]);
+									} else {
+										Console.WriteLine ("Invalid Result for {0}", keywords [idi].Value);
+									}
 								}
 							}));
 						}
@@ -188,18 +193,24 @@ namespace GetNoS
 							var idj = j;
 							var existCk = db.Single<CrossKeyword> (ck => ck.FisrtKeyword == keywords [idi].Id && ck.SecondKeyword == keywords [idj].Id);
 							if (existCk == null || existCk.GoogleSearchCount == -1) {
+								Task.Delay (new Random (System.Environment.TickCount).Next (50)).Wait ();
 								tasklist.Add (doSearchAsync (keywords [i].Value + " " + keywords [j].Value).ContinueWith (t => {
 									if (t.IsFaulted)
-										Logger.Log (t.Exception.InnerException);
+										Console.WriteLine (t.Exception.InnerException.Message);
+										// Logger.Log (t.Exception.InnerException);
 									else {
-										var ck = new CrossKeyword () {
-											FisrtKeyword = keywords [idi].Id,
-											SecondKeyword = keywords [idj].Id,
-											GoogleSearchCount = t.Result
-										};
-										if (existCk != null)
-											ck.Id = existCk.Id;
-										db.Save (ck);
+										if (t.Result != -1) {
+											var ck = new CrossKeyword () {
+												FisrtKeyword = keywords [idi].Id,
+												SecondKeyword = keywords [idj].Id,
+												GoogleSearchCount = t.Result
+											};
+											if (existCk != null)
+												ck.Id = existCk.Id;
+											db.Save (ck);
+										} else {
+											Console.WriteLine ("Invalid Result for {0} {1}", keywords [idi].Value, keywords [idj].Value);
+										}
 									}
 								}));
 							} else {
@@ -207,18 +218,19 @@ namespace GetNoS
 							}
 							try {
 								if (tasklist.Count > Share.ParallelTask) {
-									Task.Delay (new Random (System.Environment.TickCount).Next (1000)).Wait ();
 									tasklist.RemoveAll (t => t.IsCompleted);
 									if (tasklist.Count < Share.ParallelTask) {
-										Console.WriteLine ("Task {0}s < {1}, continue", tasklist.Count, Share.ParallelTask);
+										Console.WriteLine ("{0} Tasks < {1}, continue", tasklist.Count, Share.ParallelTask);
 										continue;
 									} else {
-										Console.WriteLine ("Task {0}s, too many wait ...", tasklist.Count);
+										Task.Delay (2000).Wait ();
+										Console.WriteLine ("{0} Tasks, too many wait ...", tasklist.Count);
 										Task.WhenAny (tasklist).Wait ();
 									}
 								}
 							} catch (Exception ex) {
-								Logger.Log (ex);
+								Console.WriteLine (ex.Message);
+								// Logger.Log (ex);
 							}
 						}
 					}

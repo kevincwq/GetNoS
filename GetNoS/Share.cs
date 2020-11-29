@@ -127,10 +127,10 @@ namespace GetNoS
 			MyHttpClient = CreateHttpClient ();
 		}
 
-		public static int GetGoogleSearchCount (string query)
-		{
-			return DoSearch (query);
-		}
+		//		public static int GetGoogleSearchCount (string query)
+		//		{
+		//			return DoSearch (query);
+		//		}
 
 		public static async Task<int> GetGoogleSearchCountAsync (string query)
 		{
@@ -162,19 +162,19 @@ namespace GetNoS
 			return requestMessage;
 		}
 
-		private static int DoSearch (string query)
+		private static async Task<int> DoSearchAsync (string query)
 		{
 			// Instantiate the regular expression object.
 			Regex r = new Regex (Share.CountPattern, RegexOptions.IgnoreCase);
 			HttpWebRequest req = (HttpWebRequest)WebRequest.Create (Share.GoogleSearchUrl + query);
-			req.UserAgent = Share.UserAgent;// "Google Chrome/36"; // "Mozilla/5.0"
+			req.UserAgent = "Google Chrome/45";//Share.UserAgent;// "Google Chrome/36"; // "Mozilla/5.0"
 			//			req.SendChunked = true;
 			req.Timeout = Share.ReqTimeout;
 			req.ReadWriteTimeout = Share.ReqReadWriteTimeout;
 			//			req.TransferEncoding = "UTF-8";
-			HttpWebResponse resp = (HttpWebResponse)req.GetResponse ();
+			var resp = await req.GetResponseAsync ();
 			var stream = resp.GetResponseStream ();
-			int count = 0;
+			int count = -1;
 			using (var textReader = new StreamReader (stream)) {
 				Match m = r.Match (textReader.ReadToEnd ());
 				if (m.Success) {
@@ -189,7 +189,7 @@ namespace GetNoS
 		private static async Task<int> DoSearchAsync1 (HttpClient client, string query)
 		{
 			var text = await client.GetStringAsync (Share.GoogleSearchUrl + query);
-			int count = 0;
+			int count = -1;
 			var r = new Regex (Share.CountPattern, RegexOptions.IgnoreCase);
 			var m = r.Match (text);
 			if (m.Success) {
@@ -201,19 +201,22 @@ namespace GetNoS
 
 		private static async Task<int> DoSearchAsync2 (HttpClient client, HttpRequestMessage requestMessage)
 		{
-			// Send the request to the server
-			HttpResponseMessage response = await client.SendAsync (requestMessage);
+			int count = -1;
 
-			// Just as an example I'm turning the response into a string here
-			string text = await response.Content.ReadAsStringAsync ();
-			int count = 0;
-			var r = new Regex (Share.CountPattern, RegexOptions.IgnoreCase);
-			var m = r.Match (text);
-			if (m.Success) {
-				var g = m.Groups [1];
-				int.TryParse (g.Value.Replace (",", ""), out count);
+			// Send the request to the server
+			using (HttpResponseMessage response = await client.SendAsync (requestMessage)) {
+
+				// Just as an example I'm turning the response into a string here
+				string text = await response.Content.ReadAsStringAsync ();
+				var r = new Regex (Share.CountPattern, RegexOptions.IgnoreCase);
+				var m = r.Match (text);
+				if (m.Success) {
+					var g = m.Groups [1];
+					int.TryParse (g.Value.Replace (",", ""), out count);
+				}
+				requestMessage.Dispose ();
+				return count;
 			}
-			return count;
 		}
 
 		#endregion
